@@ -21,5 +21,8 @@ go.work.sum
 # Environments
 .env
 
+# Bank statements
+*.csv
+
 # Misc.
 .DS_Store
