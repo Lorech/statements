@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"errors"
 	"fmt"
 
 	"statements/pkg/transactions"
@@ -22,7 +21,7 @@ func NewProcessCommand() *cobra.Command {
 				if err == nil {
 					*input = bInput
 				} else {
-					return errors.New("bank has no default input, provide one manually")
+					return fmt.Errorf("bank has no default input, provide one manually")
 				}
 			}
 

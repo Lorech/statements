@@ -1,7 +1,7 @@
 package transactions
 
 import (
-	"errors"
+	"fmt"
 	"strings"
 )
 
@@ -35,7 +35,7 @@ func (b *Bank) Set(v string) error {
 		*b = Bank(vp)
 		return nil
 	default:
-		return errors.New(`must be one of "swedbank"`)
+		return fmt.Errorf(`must be one of "swedbank"`)
 	}
 }
 
@@ -45,6 +45,6 @@ func (b *Bank) Input() (string, error) {
 	case BankSwedbank:
 		return "statement.csv", nil
 	default:
-		return "", errors.New(`no default input file specified`)
+		return "", fmt.Errorf(`no default input file specified`)
 	}
 }
