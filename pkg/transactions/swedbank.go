@@ -11,10 +11,11 @@ import (
 type SwedbankEntryType string
 
 const (
-	SwedbankEntryStartBalance SwedbankEntryType = "10"
-	SwedbankEntryTransaction  SwedbankEntryType = "20"
-	SwedbankEntryTurnover     SwedbankEntryType = "82"
-	SwedbankEntryEndBalance   SwedbankEntryType = "86"
+	SwedbankEntryStartBalance    SwedbankEntryType = "10"
+	SwedbankEntryTransaction     SwedbankEntryType = "20"
+	SwedbankEntryTurnover        SwedbankEntryType = "82"
+	SwedbankEntryEndBalance      SwedbankEntryType = "86"
+	SwedbankEntryCurrentInterest SwedbankEntryType = "900"
 )
 
 type SwedbankTransactionType string
@@ -114,6 +115,8 @@ func parseEntryType(t string) (SwedbankEntryType, error) {
 	case "82":
 		fallthrough
 	case "86":
+		fallthrough
+	case "900":
 		return SwedbankEntryType(t), nil
 	default:
 		return "", fmt.Errorf("invalid Swedbank entry type provided: %s", t)
