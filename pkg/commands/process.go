@@ -32,7 +32,31 @@ func NewProcessCommand() *cobra.Command {
 				return err
 			}
 
-			err = writeOutput(*output, records)
+			// TODO: Generalize this
+			var ts []transactions.Transaction
+			switch bank {
+			case "swedbank":
+				var bts []transactions.SwedbankTransaction
+				// Parse the CSV rows into bank transactions
+				for i := 1; i < len(records); i++ {
+					row := records[i]
+					bt, err := transactions.NewSwedbankTransaction(row)
+					if err != nil {
+						// TODO: Allow ignoring/warning instead of failing
+						return fmt.Errorf("parsing failed on row %d: %v", i, err)
+					}
+					bts = append(bts, bt)
+				}
+
+				// TODO: Add filtering middleware here
+
+				// Normalize the bank transactions
+				for _, bt := range bts {
+					ts = append(ts, bt.Normalize())
+				}
+			}
+
+			err = writeOutput(*output, ts)
 			if err != nil {
 				return err
 			}
@@ -72,8 +96,13 @@ func readInput(input string) ([][]string, error) {
 	return records, nil
 }
 
-// Writes the provided CSV data to the provided output file.
-func writeOutput(output string, data [][]string) error {
+// Writes transactions to the provided output file as CSV.
+func writeOutput(output string, transactions []transactions.Transaction) error {
+	var rows [][]string
+	for _, t := range transactions {
+		rows = append(rows, t.Csv())
+	}
+
 	out, err := os.Create(output)
 	if err != nil {
 		return fmt.Errorf("output file could not be opened: %v", err)
@@ -82,7 +111,7 @@ func writeOutput(output string, data [][]string) error {
 
 	w := csv.NewWriter(out)
 	w.Comma = ';'
-	err = w.WriteAll(data)
+	err = w.WriteAll(rows)
 	if err != nil {
 		return fmt.Errorf("csv file could not be written: %v", err)
 	}

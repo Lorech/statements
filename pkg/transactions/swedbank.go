@@ -53,6 +53,7 @@ type SwedbankTransaction struct {
 	DocumentNumber  string
 }
 
+// Creates a Swedbank transaction from CSV data.
 func NewSwedbankTransaction(row []string) (SwedbankTransaction, error) {
 	var t SwedbankTransaction
 
@@ -103,6 +104,26 @@ func NewSwedbankTransaction(row []string) (SwedbankTransaction, error) {
 	}
 
 	return t, nil
+}
+
+// Converts the Swedbank transaction format to the general one used by the tool.
+func (t SwedbankTransaction) Normalize() Transaction {
+	var nt Transaction
+
+	nv := int(t.Value)
+	if t.Flow == SwedbankDebit {
+		nv = -int(t.Value)
+	}
+
+	nt = Transaction{
+		Date:          t.Date,
+		AccountHolder: t.AccountHolder,
+		Description:   t.Description,
+		Value:         nv,
+		Currency:      t.Currency,
+	}
+
+	return nt
 }
 
 // Parses an entry type from a raw string into an enum.
