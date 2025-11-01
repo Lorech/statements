@@ -43,7 +43,7 @@ type SwedbankTransaction struct {
 	Date            time.Time
 	AccountHolder   string
 	Description     string
-	Value           int // Stored as decimal in CSV
+	Value           uint // Stored as decimal in CSV
 	Currency        string
 	Flow            SwedbankFlow
 	ArchiveCode     string
@@ -76,11 +76,11 @@ func NewSwedbankTransaction(row []string) (SwedbankTransaction, error) {
 	}
 
 	vp := strings.Split(row[5], ",")
-	w, err := strconv.Atoi(vp[0])
+	w, err := strconv.ParseUint(vp[0], 10, 64)
 	if err != nil {
 		return t, err
 	}
-	d, err := strconv.Atoi(vp[1])
+	d, err := strconv.ParseUint(vp[1], 10, 64)
 	if err != nil {
 		return t, err
 	}
@@ -92,7 +92,7 @@ func NewSwedbankTransaction(row []string) (SwedbankTransaction, error) {
 		Date:            date,
 		AccountHolder:   row[3],
 		Description:     row[4],
-		Value:           value,
+		Value:           uint(value),
 		Currency:        row[6],
 		Flow:            flow,
 		ArchiveCode:     row[8],
