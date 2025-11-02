@@ -32,29 +32,24 @@ func NewProcessCommand() *cobra.Command {
 				return err
 			}
 
-			// TODO: Generalize this
-			var ts []transactions.Transaction
+			var bts []transactions.TransactionAdapter
 			switch bank {
 			case "swedbank":
-				var bts []transactions.SwedbankTransaction
-				// Parse the CSV rows into bank transactions
-				for i := 1; i < len(records); i++ {
-					row := records[i]
-					bt, err := transactions.NewSwedbankTransaction(row)
-					if err != nil {
-						// TODO: Allow ignoring/warning instead of failing
-						return fmt.Errorf("parsing failed on row %d: %v", i, err)
-					}
-					bts = append(bts, bt)
+				sts, err := transactions.NewSwedbankTransactions(records)
+				if err != nil {
+					return err
 				}
-
-				// TODO: Add filtering middleware here
-
-				// Normalize the bank transactions
-				for _, bt := range bts {
-					ts = append(ts, bt.Normalize())
-				}
+				bts = transactions.AdaptTransactions(sts)
 			}
+
+			// TODO: Add filtering here
+
+			var ts []transactions.Transaction
+			for _, bt := range bts {
+				ts = append(ts, bt.Normalize())
+			}
+
+			// TODO: Add classification here
 
 			err = writeOutput(*output, ts)
 			if err != nil {

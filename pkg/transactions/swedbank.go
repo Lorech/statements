@@ -53,7 +53,24 @@ type SwedbankTransaction struct {
 	DocumentNumber  string
 }
 
-// Creates a Swedbank transaction from CSV data.
+// Creates a slice of Swedbank transactions from CSV rows.
+func NewSwedbankTransactions(rows [][]string) ([]SwedbankTransaction, error) {
+	var bts []SwedbankTransaction
+
+	for i := 1; i < len(rows); i++ {
+		row := rows[i]
+		bt, err := NewSwedbankTransaction(row)
+		if err != nil {
+			// TODO: Allow ignoring/warning instead of failing
+			return bts, fmt.Errorf("parsing failed on row %d: %v", i, err)
+		}
+		bts = append(bts, bt)
+	}
+
+	return bts, nil
+}
+
+// Creates a Swedbank transaction from a CSV row.
 func NewSwedbankTransaction(row []string) (SwedbankTransaction, error) {
 	var t SwedbankTransaction
 
