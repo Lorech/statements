@@ -24,5 +24,9 @@ go.work.sum
 # Bank statements
 *.csv
 
+# Ignore configs, but not the JSON schema definitions
+*.json
+!schema/**/*.json
+
 # Misc.
 .DS_Store
