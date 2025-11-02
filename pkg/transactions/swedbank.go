@@ -21,14 +21,14 @@ const (
 type SwedbankTransactionType string
 
 const (
-	SwedbankTransactionStartBalance   SwedbankTransactionType = "AS"
-	SwedbankTransactionToBank         SwedbankTransactionType = "INB"
-	SwedbankTransactionToPrivate      SwedbankTransactionType = "PRV"
-	SwedbankTransactionCapitalGains   SwedbankTransactionType = "AIA"
-	SwedbankTransactionCurrentIntrest SwedbankTransactionType = "AI"
-	SwedbankTransactionCommission     SwedbankTransactionType = "KOM"
-	SwedbankTransactionTurnover       SwedbankTransactionType = "K2"
-	SwedbankTransactionEndBalance     SwedbankTransactionType = "LS"
+	SwedbankTransactionStartBalance    SwedbankTransactionType = "AS"
+	SwedbankTransactionToBank          SwedbankTransactionType = "INB"
+	SwedbankTransactionToPrivate       SwedbankTransactionType = "PRV"
+	SwedbankTransactionCapitalGains    SwedbankTransactionType = "AIA"
+	SwedbankTransactionCurrentInterest SwedbankTransactionType = "AI"
+	SwedbankTransactionCommission      SwedbankTransactionType = "KOM"
+	SwedbankTransactionTurnover        SwedbankTransactionType = "K2"
+	SwedbankTransactionEndBalance      SwedbankTransactionType = "LS"
 )
 
 type SwedbankFlow string

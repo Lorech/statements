@@ -5,7 +5,7 @@ type TransactionAdapter interface {
 	Normalize() Transaction
 }
 
-// Converts a slice of TransactionAdapter-conforming items into a slice of adapter values.
+// Converts a slice of adapter-conforming items into a slice of adapter interface items.
 func AdaptTransactions[T TransactionAdapter](ts []T) []TransactionAdapter {
 	adapters := make([]TransactionAdapter, len(ts))
 	for i, v := range ts {
