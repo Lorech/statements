@@ -4,22 +4,12 @@
   "description": "The configuration format for the statements CLI tool",
   "type": "object",
   "properties": {
-    "bank": {
-      "description": "The bank to process the input as",
-      "enum": [
-        "swedbank"
-      ]
-    },
-    "input": {
-      "description": "The input file to parse",
-      "type": "string"
-    },
-    "output": {
-      "description": "The output file to write to",
-      "type": "string"
+    "flags": {
+      "description": "Flags to provide to the CLI's process command",
+      "$ref": "./_flags.schema.json"
     }
   },
   "required": [
-    "bank"
+    "flags"
   ]
 }
