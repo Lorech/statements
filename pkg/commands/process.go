@@ -5,29 +5,45 @@ import (
 	"fmt"
 	"os"
 
+	"statements/pkg/config"
 	"statements/pkg/transactions"
 
 	"github.com/spf13/cobra"
 )
 
 func NewProcessCommand() *cobra.Command {
-	var bank transactions.Bank
-	var input, output *string
+	var infile, outfile, confile *string
 
 	cmd := &cobra.Command{
 		Use:   "process",
 		Short: "Process a bank statement",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if *input == "" {
-				bInput, err := bank.Input()
-				if err == nil {
-					*input = bInput
+			c, err := config.Parse(*confile)
+			if err != nil {
+				return fmt.Errorf("could not parse config file: %v", err)
+			}
+
+			var bank transactions.Bank
+			err = bank.Set(c.Flags.Bank)
+			if err != nil {
+				return err
+			}
+
+			if *infile == "" {
+				cInput := c.Flags.Input
+				if cInput != "" {
+					*infile = cInput
 				} else {
-					return fmt.Errorf("bank has no default input, provide one manually")
+					bInput, err := bank.Input()
+					if err == nil {
+						*infile = bInput
+					} else {
+						return fmt.Errorf("no input file provided")
+					}
 				}
 			}
 
-			records, err := readInput(*input)
+			records, err := readInput(*infile)
 			if err != nil {
 				return err
 			}
@@ -51,7 +67,16 @@ func NewProcessCommand() *cobra.Command {
 
 			// TODO: Add classification here
 
-			err = writeOutput(*output, ts)
+			if *outfile == "" {
+				cOutput := c.Flags.Output
+				if cOutput != "" {
+					*outfile = cOutput
+				} else {
+					*outfile = "output.csv"
+				}
+			}
+
+			err = writeOutput(*outfile, ts)
 			if err != nil {
 				return err
 			}
@@ -60,13 +85,12 @@ func NewProcessCommand() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().VarP(&bank, "bank", "b", `bank to parse input as, options - "swedbank"`)
-	cmd.MarkFlagRequired("bank")
-
-	input = cmd.Flags().StringP("input", "i", "", "input file to process")
+	infile = cmd.Flags().StringP("input", "i", "", "input file to process")
 	cmd.MarkFlagFilename("input")
 
-	output = cmd.Flags().StringP("output", "o", "output.csv", "output file to write to")
+	outfile = cmd.Flags().StringP("output", "o", "", "output file to write to")
+
+	confile = cmd.Flags().String("config", config.DefaultConfig, "configuration file to use")
 
 	return cmd
 }

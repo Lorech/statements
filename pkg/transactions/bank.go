@@ -11,23 +11,12 @@ const (
 	BankSwedbank Bank = "swedbank"
 )
 
-// The stringified representation of the bank enumeration.
-//
-// Used as help text in Cobra.
-func (b *Bank) Type() string {
-	return "Bank"
-}
-
 // The stringified representation of a bank.
-//
-// Used for printing and as help text in Cobra.
 func (b *Bank) String() string {
 	return string(*b)
 }
 
-// Set the value of a bank.
-//
-// Also used as a way to convert `string` to `Bank`
+// Parses a string into a bank.
 func (b *Bank) Set(v string) error {
 	vp := strings.ToLower(v)
 	switch vp {
