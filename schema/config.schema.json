@@ -21,19 +21,5 @@
   },
   "required": [
     "bank"
-  ],
-  "if": {
-    "not": {
-      "properties": {
-        "bank": {
-          "const": "swedbank"
-        }
-      }
-    }
-  },
-  "then": {
-    "required": [
-      "input"
-    ]
-  }
+  ]
 }
