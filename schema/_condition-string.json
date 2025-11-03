@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "String filter",
+  "description": "Conditions for filtering transactions based on string fields",
+  "type": "string",
+  "enum": [
+    "CONTAIN",
+    "EQUAL",
+    "NOT_CONTAIN",
+    "NOT_EQUAL"
+  ]
+}

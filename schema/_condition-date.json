@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Date filter",
+  "description": "Conditions for filtering transactions based on date fields",
+  "type": "string",
+  "enum": [
+    "LESS_THAN",
+    "LESS_THAN_EQUAL",
+    "GREATER_THAN",
+    "GREATER_THAN_EQUAL",
+    "EQUAL",
+    "NOT_EQUAL"
+  ]
+}

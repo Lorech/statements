@@ -7,6 +7,13 @@
     "flags": {
       "description": "Flags to provide to the CLI's process command",
       "$ref": "./_flags.schema.json"
+    },
+    "filters": {
+      "description": "Filters to apply to the original transaction list before nomalizing",
+      "type": "array",
+      "items": {
+        "anyOf": []
+      }
     }
   },
   "required": [
