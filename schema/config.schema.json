@@ -12,7 +12,11 @@
       "description": "Filters to apply to the original transaction list before nomalizing",
       "type": "array",
       "items": {
-        "anyOf": []
+        "anyOf": [
+          {
+            "$ref": "./_filters-swedbank.json"
+          }
+        ]
       }
     }
   },
