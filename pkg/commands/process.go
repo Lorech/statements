@@ -69,7 +69,6 @@ func NewProcessCommand() *cobra.Command {
 				}
 			}
 
-			fmt.Println(fs)
 			bts = adapters.FilterTransactions(bts, fs)
 
 			var ts []transactions.Transaction

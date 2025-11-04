@@ -133,7 +133,6 @@ func (f DateFilter) FieldName() string {
 
 // Checks if a date filter matches a given value.
 func (f DateFilter) Match(value any) bool {
-	fmt.Printf("Attempting to convert %v to date", value)
 	v, ok := value.(string)
 	if !ok {
 		return false
@@ -190,7 +189,6 @@ func (f NumberFilter) Match(value any) bool {
 		if v.Type().ConvertibleTo(reflect.TypeOf("")) {
 			i = int(v.Convert(reflect.TypeOf("")).Int())
 		} else {
-			fmt.Printf("Cannot convert type %T to int\n", value)
 			return false
 		}
 	}
@@ -234,7 +232,6 @@ func (f StringFilter) Match(value any) bool {
 		if v.Type().ConvertibleTo(reflect.TypeOf("")) {
 			s = v.Convert(reflect.TypeOf("")).String()
 		} else {
-			fmt.Printf("Cannot convert type %T to string\n", value)
 			return false
 		}
 	}
