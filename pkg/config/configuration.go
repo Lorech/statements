@@ -9,7 +9,8 @@ import (
 )
 
 type Config struct {
-	Flags FlagConfig `json:"flags"`
+	Flags   FlagConfig  `json:"flags"`
+	Filters []RawFilter `json:"filters"`
 }
 
 const DefaultConfig = "config.json"
