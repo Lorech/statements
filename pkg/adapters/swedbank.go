@@ -1,8 +1,9 @@
-package transactions
+package adapters
 
 import (
 	"fmt"
 	"statements/pkg/ctime"
+	"statements/pkg/transactions"
 	"strconv"
 	"strings"
 	"time"
@@ -124,15 +125,15 @@ func NewSwedbankTransaction(row []string) (SwedbankTransaction, error) {
 }
 
 // Converts the Swedbank transaction format to the general one used by the tool.
-func (t SwedbankTransaction) Normalize() Transaction {
-	var nt Transaction
+func (t SwedbankTransaction) Normalize() transactions.Transaction {
+	var nt transactions.Transaction
 
 	nv := int(t.Value)
 	if t.Flow == SwedbankDebit {
 		nv = -int(t.Value)
 	}
 
-	nt = Transaction{
+	nt = transactions.Transaction{
 		Date:          t.Date,
 		AccountHolder: t.AccountHolder,
 		Description:   t.Description,

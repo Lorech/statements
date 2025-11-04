@@ -1,7 +1,7 @@
-package transactions_test
+package adapters_test
 
 import (
-	"statements/pkg/transactions"
+	"statements/pkg/adapters"
 	"testing"
 	"time"
 )
@@ -10,7 +10,7 @@ func TestNewSwedbankTransaction(t *testing.T) {
 	tests := []struct {
 		name    string
 		row     []string
-		want    transactions.SwedbankTransaction
+		want    adapters.SwedbankTransaction
 		wantErr bool
 	}{
 		{"parse transaction",
@@ -27,17 +27,17 @@ func TestNewSwedbankTransaction(t *testing.T) {
 				"INB",
 				"",
 				"",
-			}, transactions.SwedbankTransaction{
+			}, adapters.SwedbankTransaction{
 				AccountNumber:   "LV02HABA0123456789012",
-				EntryType:       transactions.SwedbankEntryTransaction,
+				EntryType:       adapters.SwedbankEntryTransaction,
 				Date:            time.Date(2025, time.Month(10), 31, 0, 0, 0, 0, time.UTC),
 				AccountHolder:   "TEST USER",
 				Description:     "SOME DESCRIPTION",
 				Value:           83,
 				Currency:        "EUR",
-				Flow:            transactions.SwedbankCredit,
+				Flow:            adapters.SwedbankCredit,
 				ArchiveCode:     "2025103101234567",
-				TransactionType: transactions.SwedbankTransactionToBank,
+				TransactionType: adapters.SwedbankTransactionToBank,
 				ReferenceNumber: "",
 				DocumentNumber:  "",
 			},
@@ -46,7 +46,7 @@ func TestNewSwedbankTransaction(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, gotErr := transactions.NewSwedbankTransaction(tt.row)
+			got, gotErr := adapters.NewSwedbankTransaction(tt.row)
 			if gotErr != nil {
 				if !tt.wantErr {
 					t.Errorf("NewSwedbankTransaction() failed: %v", gotErr)

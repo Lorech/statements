@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"statements/pkg/adapters"
 	"statements/pkg/config"
 	"statements/pkg/transactions"
 
@@ -48,14 +49,14 @@ func NewProcessCommand() *cobra.Command {
 				return err
 			}
 
-			var bts []transactions.TransactionAdapter
+			var bts []adapters.TransactionAdapter
 			switch bank {
 			case "swedbank":
-				sts, err := transactions.NewSwedbankTransactions(records)
+				sts, err := adapters.NewSwedbankTransactions(records)
 				if err != nil {
 					return err
 				}
-				bts = transactions.AdaptTransactions(sts)
+				bts = adapters.AdaptTransactions(sts)
 			}
 
 			// TODO: Add filtering here

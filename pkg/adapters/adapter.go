@@ -1,8 +1,12 @@
-package transactions
+package adapters
+
+import (
+	"statements/pkg/transactions"
+)
 
 // A shared interface for bank transaction structs.
 type TransactionAdapter interface {
-	Normalize() Transaction
+	Normalize() transactions.Transaction
 }
 
 // Converts a slice of adapter-conforming items into a slice of adapter interface items.
