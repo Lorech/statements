@@ -19,8 +19,7 @@
           "field": {
             "type": "string",
             "enum": [
-              "Datums",
-              "Date"
+              "Datums"
             ]
           },
           "condition": {
@@ -43,8 +42,7 @@
           "field": {
             "type": "string",
             "enum": [
-              "Summa",
-              "Value"
+              "Summa"
             ]
           },
           "condition": {
@@ -68,25 +66,15 @@
             "type": "string",
             "enum": [
               "Klienta konts",
-              "AccountNumber",
               "Ieraksta tips",
-              "EntryType",
               "Saņēmējs/Maksātājs",
-              "AccountHolder",
               "Informācija saņēmējam",
-              "Description",
               "Valūta",
-              "Currency",
               "Debets/Kredīts",
-              "Flow",
               "Arhīva kods",
-              "ArchiveCode",
               "Maksājuma veids",
-              "TransactionType",
               "Refernces numurs",
-              "ReferenceNumber",
-              "Dokumenta numurs",
-              "DocumentNumber"
+              "Dokumenta numurs"
             ]
           },
           "condition": {
