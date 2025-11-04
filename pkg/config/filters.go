@@ -148,7 +148,7 @@ func (f DateFilter) Match(value any) bool {
 		return false
 	}
 
-	diff := c.Compare(t)
+	diff := t.Compare(c)
 
 	switch f.Condition {
 	case DateLessThan:
