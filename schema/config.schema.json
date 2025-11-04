@@ -9,7 +9,7 @@
       "$ref": "./_flags.schema.json"
     },
     "filters": {
-      "description": "Filters to apply to the original transaction list before nomalizing",
+      "description": "Filters to apply to the original transaction list before normalizing",
       "type": "array",
       "items": {
         "anyOf": [
