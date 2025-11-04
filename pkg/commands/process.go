@@ -50,6 +50,8 @@ func NewProcessCommand() *cobra.Command {
 			}
 
 			var bts []adapters.TransactionAdapter
+			var fs []config.Filter
+
 			switch bank {
 			case "swedbank":
 				sts, err := adapters.NewSwedbankTransactions(records)
@@ -57,9 +59,18 @@ func NewProcessCommand() *cobra.Command {
 					return err
 				}
 				bts = adapters.AdaptTransactions(sts)
+
+				for _, rf := range c.Filters {
+					f, err := rf.DecodeWithFieldMap(adapters.SwedbankFieldMap)
+					if err != nil {
+						return err
+					}
+					fs = append(fs, f)
+				}
 			}
 
-			// TODO: Add filtering here
+			fmt.Println(fs)
+			bts = adapters.FilterTransactions(bts, fs)
 
 			var ts []transactions.Transaction
 			for _, bt := range bts {
