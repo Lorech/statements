@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"statements/pkg/ctime"
 	"strings"
 	"time"
@@ -132,6 +133,7 @@ func (f DateFilter) FieldName() string {
 
 // Checks if a date filter matches a given value.
 func (f DateFilter) Match(value any) bool {
+	fmt.Printf("Attempting to convert %v to date", value)
 	v, ok := value.(string)
 	if !ok {
 		return false
@@ -174,24 +176,38 @@ func (f NumberFilter) FieldName() string {
 
 // Checks if a number filter matches a given value.
 func (f NumberFilter) Match(value any) bool {
-	v, ok := value.(int)
-	if !ok {
+	v := reflect.ValueOf(value)
+	if !v.IsValid() {
 		return false
+	}
+
+	var i int
+	switch v.Kind() {
+	case reflect.Int:
+		i = int(v.Int())
+	default:
+		// Attempt to convert things like int enums.
+		if v.Type().ConvertibleTo(reflect.TypeOf("")) {
+			i = int(v.Convert(reflect.TypeOf("")).Int())
+		} else {
+			fmt.Printf("Cannot convert type %T to int\n", value)
+			return false
+		}
 	}
 
 	switch f.Condition {
 	case NumberLessThan:
-		return v < f.Comparison
+		return i < f.Comparison
 	case NumberLessThanEqual:
-		return v <= f.Comparison
+		return i <= f.Comparison
 	case NumberGreaterThan:
-		return v > f.Comparison
+		return i > f.Comparison
 	case NumberGreaterThanEqual:
-		return v >= f.Comparison
+		return i >= f.Comparison
 	case NumberEqual:
-		return v == f.Comparison
+		return i == f.Comparison
 	case NumberNotEqual:
-		return v != f.Comparison
+		return i != f.Comparison
 	}
 
 	return false
@@ -204,20 +220,34 @@ func (f StringFilter) FieldName() string {
 
 // Checks if a string filter matches a given value.
 func (f StringFilter) Match(value any) bool {
-	v, ok := value.(string)
-	if !ok {
+	v := reflect.ValueOf(value)
+	if !v.IsValid() {
 		return false
+	}
+
+	var s string
+	switch v.Kind() {
+	case reflect.String:
+		s = v.String()
+	default:
+		// Attempt to convert things like string enums.
+		if v.Type().ConvertibleTo(reflect.TypeOf("")) {
+			s = v.Convert(reflect.TypeOf("")).String()
+		} else {
+			fmt.Printf("Cannot convert type %T to string\n", value)
+			return false
+		}
 	}
 
 	switch f.Condition {
 	case StringEqual:
-		return v == f.Comparison
+		return s == f.Comparison
 	case StringNotEqual:
-		return v != f.Comparison
+		return s != f.Comparison
 	case StringContain:
-		return strings.Contains(v, f.Comparison)
+		return strings.Contains(s, f.Comparison)
 	case StringNotContain:
-		return !strings.Contains(v, f.Comparison)
+		return !strings.Contains(s, f.Comparison)
 	}
 
 	return false
