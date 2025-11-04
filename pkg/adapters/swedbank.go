@@ -1,8 +1,10 @@
-package transactions
+package adapters
 
 import (
 	"fmt"
+	"statements/pkg/config"
 	"statements/pkg/ctime"
+	"statements/pkg/transactions"
 	"strconv"
 	"strings"
 	"time"
@@ -51,6 +53,21 @@ type SwedbankTransaction struct {
 	TransactionType SwedbankTransactionType
 	ReferenceNumber string
 	DocumentNumber  string
+}
+
+var SwedbankFieldMap = config.FieldMap{
+	"Klienta konts":         config.FieldTypeString,
+	"Ieraksta tips":         config.FieldTypeString,
+	"Datums":                config.FieldTypeDate,
+	"Saņēmējs/Maksātājs":    config.FieldTypeString,
+	"Informācija saņēmējam": config.FieldTypeString,
+	"Summa":                 config.FieldTypeNumber,
+	"Valūta":                config.FieldTypeString,
+	"Debets/Kredīts":        config.FieldTypeString,
+	"Arhīva kods":           config.FieldTypeString,
+	"Maksājuma veids":       config.FieldTypeString,
+	"Refernces numurs":      config.FieldTypeString,
+	"Dokumenta numurs":      config.FieldTypeString,
 }
 
 // Creates a slice of Swedbank transactions from CSV rows.
@@ -123,16 +140,48 @@ func NewSwedbankTransaction(row []string) (SwedbankTransaction, error) {
 	return t, nil
 }
 
+// Resolves the value for a given field by name.
+func (t SwedbankTransaction) FieldValue(field string) any {
+	switch field {
+	case "Klienta konts":
+		return t.AccountNumber
+	case "Ieraksta tips":
+		return t.EntryType
+	case "Datums":
+		return t.Date
+	case "Saņēmējs/Maksātājs":
+		return t.AccountHolder
+	case "Informācija saņēmējam":
+		return t.Description
+	case "Summa":
+		return t.Value
+	case "Valūta":
+		return t.Currency
+	case "Debets/Kredīts":
+		return t.Flow
+	case "Arhīva kods":
+		return t.ArchiveCode
+	case "Maksājuma veids":
+		return t.TransactionType
+	case "Refernces numurs":
+		return t.ReferenceNumber
+	case "Dokumenta numurs":
+		return t.DocumentNumber
+	}
+
+	return nil
+}
+
 // Converts the Swedbank transaction format to the general one used by the tool.
-func (t SwedbankTransaction) Normalize() Transaction {
-	var nt Transaction
+func (t SwedbankTransaction) Normalize() transactions.Transaction {
+	var nt transactions.Transaction
 
 	nv := int(t.Value)
 	if t.Flow == SwedbankDebit {
 		nv = -int(t.Value)
 	}
 
-	nt = Transaction{
+	nt = transactions.Transaction{
 		Date:          t.Date,
 		AccountHolder: t.AccountHolder,
 		Description:   t.Description,

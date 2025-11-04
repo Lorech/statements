@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Configuration",
+  "description": "The configuration format for the statements CLI tool",
+  "type": "object",
+  "properties": {
+    "flags": {
+      "description": "Flags to provide to the CLI's process command",
+      "$ref": "./_flags.schema.json"
+    },
+    "filters": {
+      "description": "Filters to apply to the original transaction list before normalizing",
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "./_filters-swedbank.json"
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "flags"
+  ]
+}

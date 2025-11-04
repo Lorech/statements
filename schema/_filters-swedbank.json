@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Swedbank filters",
+  "description": "Transaction filters specific to Swedbank",
+  "if": {
+    "properties": {
+      "flags": {
+        "bank": {
+          "const": "swedbank"
+        }
+      }
+    }
+  },
+  "then": {
+    "anyOf": [
+      {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "Datums"
+            ]
+          },
+          "condition": {
+            "$ref": "./_condition-date.json"
+          },
+          "comparison": {
+            "description": "The date to compare against",
+            "type": "string"
+          }
+        },
+        "required": [
+          "field",
+          "condition",
+          "comparison"
+        ]
+      },
+      {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "Summa"
+            ]
+          },
+          "condition": {
+            "$ref": "./_condition-number.json"
+          },
+          "comparison": {
+            "description": "The number to compare against",
+            "type": "number"
+          }
+        },
+        "required": [
+          "field",
+          "condition",
+          "comparison"
+        ]
+      },
+      {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "Klienta konts",
+              "Ieraksta tips",
+              "Saņēmējs/Maksātājs",
+              "Informācija saņēmējam",
+              "Valūta",
+              "Debets/Kredīts",
+              "Arhīva kods",
+              "Maksājuma veids",
+              "Refernces numurs",
+              "Dokumenta numurs"
+            ]
+          },
+          "condition": {
+            "$ref": "./_condition-string.json"
+          },
+          "comparison": {
+            "description": "The string to compare against",
+            "type": "string"
+          }
+        },
+        "required": [
+          "field",
+          "condition",
+          "comparison"
+        ]
+      }
+    ]
+  }
+}

@@ -9,6 +9,7 @@ func NewRootCommand() *cobra.Command {
 		Long:  "Utility tool for automatically parsing and analyzing bank statements",
 	}
 
+	cmd.AddCommand(NewConfigCommand())
 	cmd.AddCommand(NewProcessCommand())
 	cmd.AddCommand(NewVersionCommand())
 

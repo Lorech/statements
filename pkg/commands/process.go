@@ -5,44 +5,71 @@ import (
 	"fmt"
 	"os"
 
+	"statements/pkg/adapters"
+	"statements/pkg/config"
 	"statements/pkg/transactions"
 
 	"github.com/spf13/cobra"
 )
 
 func NewProcessCommand() *cobra.Command {
-	var bank transactions.Bank
-	var input, output *string
+	var infile, outfile, confile *string
 
 	cmd := &cobra.Command{
 		Use:   "process",
 		Short: "Process a bank statement",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if *input == "" {
-				bInput, err := bank.Input()
-				if err == nil {
-					*input = bInput
-				} else {
-					return fmt.Errorf("bank has no default input, provide one manually")
-				}
+			c, err := config.Parse(*confile)
+			if err != nil {
+				return fmt.Errorf("could not parse config file: %v", err)
 			}
 
-			records, err := readInput(*input)
+			var bank transactions.Bank
+			err = bank.Set(c.Flags.Bank)
 			if err != nil {
 				return err
 			}
 
-			var bts []transactions.TransactionAdapter
+			if *infile == "" {
+				cInput := c.Flags.Input
+				if cInput != "" {
+					*infile = cInput
+				} else {
+					bInput, err := bank.Input()
+					if err == nil {
+						*infile = bInput
+					} else {
+						return fmt.Errorf("no input file provided")
+					}
+				}
+			}
+
+			records, err := readInput(*infile)
+			if err != nil {
+				return err
+			}
+
+			var bts []adapters.TransactionAdapter
+			var fs []config.Filter
+
 			switch bank {
 			case "swedbank":
-				sts, err := transactions.NewSwedbankTransactions(records)
+				sts, err := adapters.NewSwedbankTransactions(records)
 				if err != nil {
 					return err
 				}
-				bts = transactions.AdaptTransactions(sts)
+				bts = adapters.AdaptTransactions(sts)
+
+				for _, rf := range c.Filters {
+					f, err := rf.DecodeWithFieldMap(adapters.SwedbankFieldMap)
+					if err != nil {
+						return err
+					}
+					fs = append(fs, f)
+				}
 			}
 
-			// TODO: Add filtering here
+			bts = adapters.FilterTransactions(bts, fs)
 
 			var ts []transactions.Transaction
 			for _, bt := range bts {
@@ -51,7 +78,16 @@ func NewProcessCommand() *cobra.Command {
 
 			// TODO: Add classification here
 
-			err = writeOutput(*output, ts)
+			if *outfile == "" {
+				cOutput := c.Flags.Output
+				if cOutput != "" {
+					*outfile = cOutput
+				} else {
+					*outfile = "output.csv"
+				}
+			}
+
+			err = writeOutput(*outfile, ts)
 			if err != nil {
 				return err
 			}
@@ -60,13 +96,12 @@ func NewProcessCommand() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().VarP(&bank, "bank", "b", `bank to parse input as, options - "swedbank"`)
-	cmd.MarkFlagRequired("bank")
-
-	input = cmd.Flags().StringP("input", "i", "", "input file to process")
+	infile = cmd.Flags().StringP("input", "i", "", "input file to process")
 	cmd.MarkFlagFilename("input")
 
-	output = cmd.Flags().StringP("output", "o", "output.csv", "output file to write to")
+	outfile = cmd.Flags().StringP("output", "o", "", "output file to write to")
+
+	confile = cmd.Flags().String("config", config.DefaultConfig, "configuration file to use")
 
 	return cmd
 }
