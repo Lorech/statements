@@ -116,7 +116,7 @@ type DateFilter struct {
 type NumberFilter struct {
 	Field      string          `json:"field"`
 	Condition  NumberCondition `json:"condition"`
-	Comparison int             `json:"comparison"`
+	Comparison float64         `json:"comparison"`
 }
 
 // A filter applied to a string.
@@ -180,14 +180,14 @@ func (f NumberFilter) Match(value any) bool {
 		return false
 	}
 
-	var i int
+	var i float64
 	switch v.Kind() {
-	case reflect.Int:
-		i = int(v.Int())
+	case reflect.Float64:
+		i = v.Float()
 	default:
 		// Attempt to convert things like int enums.
 		if v.Type().ConvertibleTo(reflect.TypeOf("")) {
-			i = int(v.Convert(reflect.TypeOf("")).Int())
+			i = v.Convert(reflect.TypeOf("")).Float()
 		} else {
 			return false
 		}
