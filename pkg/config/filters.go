@@ -133,14 +133,16 @@ func (f DateFilter) FieldName() string {
 
 // Checks if a date filter matches a given value.
 func (f DateFilter) Match(value any) bool {
-	v, ok := value.(string)
-	if !ok {
-		return false
-	}
-
-	t, err := time.Parse(ctime.LittleEndianDateOnly, v)
-	if err != nil {
-		return false
+	var t time.Time
+	switch val := value.(type) {
+	case string:
+		st, err := time.Parse(ctime.LittleEndianDateOnly, val)
+		if err != nil {
+			return false
+		}
+		t = st
+	case time.Time:
+		t = val
 	}
 
 	c, err := time.Parse(ctime.LittleEndianDateOnly, f.Comparison)
